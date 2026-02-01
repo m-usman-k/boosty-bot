@@ -1,0 +1,551 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+    <!-- Sidebar -->
+    <aside class="w-full lg:w-64 glass rounded-3xl p-4 sticky top-24">
+        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 px-4 opacity-50">Configuration
+        </h3>
+        <nav class="flex flex-col gap-1" id="dashboard-tabs">
+            <button onclick="showTab('logging')"
+                class="tab-btn active w-full px-5 py-3 rounded-xl flex items-center gap-3 font-semibold transition-all group">
+                <div class="p-2 bg-indigo-500/10 rounded-lg group-[.active]:bg-indigo-500/20">
+                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                    </svg>
+                </div>
+                Logging
+            </button>
+            <button onclick="showTab('tickets')"
+                class="tab-btn w-full px-5 py-3 rounded-xl flex items-center gap-3 font-semibold transition-all group text-slate-400 hover:text-white hover:bg-white/5">
+                <div class="p-2 bg-slate-500/10 rounded-lg group-[.active]:bg-green-500/20">
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                    </svg>
+                </div>
+                Tickets
+            </button>
+            <button onclick="showTab('automod')"
+                class="tab-btn w-full px-5 py-3 rounded-xl flex items-center gap-3 font-semibold transition-all group text-slate-400 hover:text-white hover:bg-white/5">
+                <div class="p-2 bg-slate-500/10 rounded-lg group-[.active]:bg-red-500/20">
+                    <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 15l-3-3m0 0l3-3m-3 3h8M3 3h18v18H3V3z" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" />
+                    </svg>
+                </div>
+                Automod
+            </button>
+            <button onclick="showTab('roles')"
+                class="tab-btn w-full px-5 py-3 rounded-xl flex items-center gap-3 font-semibold transition-all group text-slate-400 hover:text-white hover:bg-white/5">
+                <div class="p-2 bg-slate-500/10 rounded-lg group-[.active]:bg-yellow-500/20">
+                    <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                    </svg>
+                </div>
+                Staff Roles
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 w-full">
+        <div class="mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-bold tracking-tight" id="tab-title">Logging Configuration</h1>
+            <a href="/dashboard"
+                class="glass px-5 py-2 rounded-xl text-slate-400 hover:text-white flex items-center gap-2 text-sm transition-all hover:scale-105">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" />
+                </svg>
+                Back to Servers
+            </a>
+        </div>
+
+        {% if request.query_params.get('success') %}
+        <div
+            class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-6 py-4 rounded-2xl mb-8 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+            <p class="font-semibold text-sm">Settings saved successfully.</p>
+        </div>
+        {% endif %}
+
+        {% if request.query_params.get('error') == 'duplicate' %}
+        <div
+            class="bg-red-500/10 border border-red-500/20 text-red-400 px-6 py-4 rounded-2xl mb-8 flex items-center gap-3 animate-pulse">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+            <p class="font-semibold text-sm">Action failed: This phrase already exists in the filter list.</p>
+        </div>
+        {% endif %}
+
+        <form action="/guild/{{ guild_id }}/update" method="POST" class="flex flex-col gap-6">
+
+            <!-- Section: Logging -->
+            <div id="section-logging" class="tab-content flex flex-col gap-6">
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-indigo-500/20 rounded-xl text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" />
+                            </svg>
+                        </span>
+                        Log Channels
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-x-8 gap-y-6">
+                        {% for field in [('log_channel_id', 'Fallback Log'), ('mod_log_channel_id', 'Moderation Log'),
+                        ('message_log_channel_id', 'Message Log'), ('member_log_channel_id', 'Member Log'),
+                        ('voice_log_channel_id', 'Voice Log')] %}
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">{{
+                                field[1]
+                                }}</label>
+                            <select name="{{ field[0] }}"
+                                class="bg-slate-900/50 border border-white/5 rounded-xl px-5 py-3 text-sm focus:border-indigo-500 transition-all outline-none appearance-none">
+                                <option value="">No Channel Selected</option>
+                                {% for ch in text_channels %}
+                                <option value="{{ ch.id }}" {% if config[field[0]]|string==ch.id|string %}selected{%
+                                    endif %}># {{ ch.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-indigo-500/20 rounded-xl text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Activity Logging
+                    </h2>
+                    <div class="grid gap-3">
+                        {% for facility in [('log_message_edits', 'Message Edits'), ('log_message_deletions', 'Message
+                        Deletions'), ('log_member_joins', 'Member Joins'), ('log_member_leaves', 'Member Leaves'),
+                        ('log_voice_updates', 'Voice Updates')] %}
+                        <div
+                            class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-slate-200">{{ facility[1] }}</span>
+                                <span class="text-[11px] text-slate-500">Record this server event in logs.</span>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer scale-90">
+                                <input type="checkbox" name="{{ facility[0] }}" class="sr-only peer" {% if
+                                    config[facility[0]] %}checked{% endif %}>
+                                <div
+                                    class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600">
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Section: Tickets -->
+            <div id="section-tickets" class="tab-content hidden flex flex-col gap-6">
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-green-500/20 rounded-xl text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Global Settings
+                    </h2>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">Default
+                            Category</label>
+                        <select name="ticket_category_id"
+                            class="bg-slate-900/50 border border-white/5 rounded-xl px-5 py-3 text-sm focus:border-green-500 transition-all outline-none appearance-none">
+                            <option value="">No Category Selected</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if config.ticket_category_id|string==cat.id|string
+                                %}selected{% endif %}>{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="px-2 text-[10px] text-slate-600 mt-1 italic">Backup if a specific reason doesn't
+                            specify a category.</p>
+                    </div>
+                </section>
+
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-green-500/20 rounded-xl text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" />
+                            </svg>
+                        </span>
+                        Ticket Reasons
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- Add Reason Form -->
+                        <div class="p-6 bg-white/[0.02] border border-white/5 rounded-2xl space-y-4">
+                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Create New Option</p>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <input type="text" id="tr-label" placeholder="Option Label (e.g. Support)"
+                                    class="bg-slate-900/50 border border-white/5 rounded-xl px-4 py-2 text-sm outline-none focus:border-green-500 transition-all">
+                                <select id="tr-category"
+                                    class="bg-slate-900/50 border border-white/5 rounded-xl px-4 py-2 text-sm outline-none focus:border-green-500 transition-all appearance-none">
+                                    <option value="">Target Category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="text" id="tr-desc" placeholder="Brief Description"
+                                    class="sm:col-span-2 bg-slate-900/50 border border-white/5 rounded-xl px-4 py-2 text-sm outline-none focus:border-green-500 transition-all">
+                                <div class="flex gap-2 sm:col-span-2">
+                                    <input type="text" id="tr-emoji" placeholder="Emoji (Optional)"
+                                        class="flex-1 bg-slate-900/50 border border-white/5 rounded-xl px-4 py-2 text-sm outline-none focus:border-green-500 transition-all">
+                                    <button type="button" onclick="addTicketReason()"
+                                        class="px-6 bg-green-600 hover:bg-green-700 rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95">Add
+                                        Reason</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reasons Grid -->
+                        <div class="grid gap-4">
+                            {% for reason in ticket_reasons %}
+                            <div
+                                class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl group hover:bg-white/[0.04] transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="w-10 h-10 flex items-center justify-center bg-green-500/10 rounded-xl text-lg">
+                                        {{ reason.emoji or '🎟️' }}
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-sm text-slate-200">{{ reason.label }}</span>
+                                        <span class="text-[11px] text-slate-500">{{ reason.description or 'No
+                                            description provided.' }}</span>
+                                    </div>
+                                </div>
+                                <a href="/guild/{{ guild_id }}/reasons/delete/{{ reason.id }}"
+                                    class="p-2 text-slate-600 hover:text-red-400 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endfor %}
+                            {% if not ticket_reasons %}
+                            <p class="text-center text-slate-600 py-6 text-xs italic">No custom reasons added yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-green-500/20 rounded-xl text-green-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Recorded Transcripts
+                    </h2>
+                    <div class="grid gap-3">
+                        {% for t in transcripts %}
+                        <div
+                            class="flex items-center justify-between px-5 py-3 bg-white/[0.02] border border-white/5 rounded-xl transition-all hover:bg-white/[0.04]">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm text-slate-200">Ticket #{{ t.id }}</span>
+                                <span class="text-[10px] text-slate-500">View stored conversation</span>
+                            </div>
+                            <a href="/transcripts/{{ t.id }}" target="_blank"
+                                class="px-4 py-2 bg-indigo-500/10 text-indigo-400 rounded-lg text-xs font-bold hover:bg-indigo-500/20 transition-all flex items-center gap-2">
+                                View
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                </svg>
+                            </a>
+                        </div>
+                        {% endfor %}
+                        {% if not transcripts %}
+                        <p class="text-center text-slate-600 py-6 text-xs italic">No transcripts available.</p>
+                        {% endif %}
+                    </div>
+                </section>
+            </div>
+
+            <!-- Section: Automod -->
+            <div id="section-automod" class="tab-content hidden flex flex-col gap-6">
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-red-500/20 rounded-xl text-red-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Safety Overlays
+                    </h2>
+                    <div
+                        class="flex items-center justify-between p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.05] transition-all">
+                        <div class="flex flex-col">
+                            <span class="font-bold text-sm text-slate-200">Anti-Invite Links</span>
+                            <span class="text-[11px] text-slate-500">Automatically delete Discord server invites.</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer scale-90">
+                            <input type="checkbox" name="automod_invite_links" class="sr-only peer" {% if
+                                config.automod_invite_links %}checked{% endif %}>
+                            <div
+                                class="w-11 h-6 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600">
+                            </div>
+                        </label>
+                    </div>
+                </section>
+
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-red-500/20 rounded-xl text-red-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Managed Phrases
+                    </h2>
+
+                    <div class="space-y-6">
+                        <div class="flex flex-col gap-3 px-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Register
+                                Forbidden Phrase</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-phrase" placeholder="Type here..."
+                                    class="flex-1 bg-slate-900/50 border border-white/5 rounded-xl px-5 py-3 text-sm focus:border-red-500 transition-all outline-none">
+                                <button type="button" onclick="addPhrase()"
+                                    class="px-6 bg-red-600 hover:bg-red-700 rounded-xl font-bold text-sm transition-all shadow-lg active:scale-95">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            {% for filter in word_filters %}
+                            <div
+                                class="flex items-center justify-between px-5 py-3 bg-white/[0.02] border border-white/5 rounded-xl group hover:bg-white/[0.04] transition-all">
+                                <span class="font-medium text-xs text-slate-300">{{ filter.phrase }}</span>
+                                <a href="/guild/{{ guild_id }}/filters/delete/{{ filter.id }}"
+                                    class="p-1.5 text-slate-600 hover:text-red-400 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                                    </svg>
+                                </a>
+                            </div>
+                            {% endfor %}
+                            {% if not word_filters %}
+                            <p class="sm:col-span-2 text-center text-slate-600 py-6 text-xs italic">No managed phrases
+                                for this
+                                server yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Section: Roles -->
+            <div id="section-roles" class="tab-content hidden flex flex-col gap-6">
+                <section class="glass p-8 rounded-3xl">
+                    <h2 class="text-xl font-bold mb-6 flex items-center gap-3">
+                        <span class="p-2.5 bg-yellow-500/20 rounded-xl text-yellow-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                            </svg>
+                        </span>
+                        Staff Permissions
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">Moderator
+                                Role</label>
+                            <select name="mod_role_id"
+                                class="bg-slate-900/50 border border-white/5 rounded-xl px-5 py-3 text-sm focus:border-yellow-500 transition-all outline-none appearance-none">
+                                <option value="">No Role Selected</option>
+                                {% for r in roles %}
+                                <option value="{{ r.id }}" {% if config.mod_role_id|string==r.id|string %}selected{%
+                                    endif %}>{{ r.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label
+                                class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-2">Administrator
+                                Role</label>
+                            <select name="admin_role_id"
+                                class="bg-slate-900/50 border border-white/5 rounded-xl px-5 py-3 text-sm focus:border-yellow-500 transition-all outline-none appearance-none">
+                                <option value="">No Role Selected</option>
+                                {% for r in roles %}
+                                <option value="{{ r.id }}" {% if config.admin_role_id|string==r.id|string %}selected{%
+                                    endif %}>{{ r.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <button type="submit"
+                class="btn-primary w-full py-4 rounded-2xl font-bold text-lg shadow-xl hover:scale-[1.01] transition-all flex items-center justify-center gap-3">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                </svg>
+                Deploy Configuration Changes
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .tab-btn.active {
+        background: rgba(88, 101, 242, 0.1);
+        color: #5865F2;
+        box-shadow: inset 0 0 0 1px rgba(88, 101, 242, 0.2);
+    }
+
+    select {
+        background-color: #0f172a !important;
+        color: #e2e8f0 !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1.5rem center;
+        background-size: 1.25rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    select:focus {
+        border-color: #5865F2 !important;
+        box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.1);
+    }
+
+    select option {
+        background-color: #1e293b;
+        color: #e2e8f0;
+    }
+</style>
+
+<script>
+    // Handle tab persistence
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || 'logging';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const initialTabBtn = document.querySelector(`.tab-btn[onclick*="${activeTab}"]`);
+        if (initialTabBtn) initialTabBtn.click();
+    });
+
+    function showTab(tabId) {
+        // Toggle Sidebar buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active', 'text-indigo-400');
+            btn.classList.add('text-slate-400', 'hover:bg-white/5');
+            btn.querySelector('div').className = 'p-2 bg-slate-500/10 rounded-xl';
+        });
+
+        const activeBtn = event.currentTarget || document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+        activeBtn.classList.add('active');
+        activeBtn.classList.remove('text-slate-400', 'hover:bg-white/5');
+
+        const colors = {
+            'logging': 'bg-indigo-500/20',
+            'tickets': 'bg-green-500/20',
+            'automod': 'bg-red-500/20',
+            'roles': 'bg-yellow-500/20'
+        };
+        activeBtn.querySelector('div').className = `p-2 ${colors[tabId]} rounded-xl`;
+
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        document.getElementById('section-' + tabId).classList.remove('hidden');
+
+        const titles = {
+            'logging': 'Logging Configuration',
+            'tickets': 'Ticket Management',
+            'automod': 'Automod Security',
+            'roles': 'Staff Permissions'
+        };
+        document.getElementById('tab-title').innerText = titles[tabId];
+
+        // Update URL without reload to remember tab
+        const url = new URL(window.location);
+        url.searchParams.set('tab', tabId);
+        window.history.replaceState({}, '', url);
+    }
+
+    async function addPhrase() {
+        const input = document.getElementById('new-phrase');
+        const phrase = input.value.trim();
+        if (!phrase) return;
+
+        const formData = new FormData();
+        formData.append('phrase', phrase);
+
+        const response = await fetch(`/guild/{{ guild_id }}/filters/add`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            window.location.reload();
+        }
+    }
+
+    async function addTicketReason() {
+        const label = document.getElementById('tr-label').value.trim();
+        const category_id = document.getElementById('tr-category').value;
+        const description = document.getElementById('tr-desc').value.trim();
+        const emoji = document.getElementById('tr-emoji').value.trim();
+
+        if (!label || !category_id) return alert("Label and Category are required!");
+
+        const formData = new FormData();
+        formData.append('label', label);
+        formData.append('category_id', category_id);
+        formData.append('description', description);
+        formData.append('emoji', emoji);
+
+        const response = await fetch(`/guild/{{ guild_id }}/reasons/add`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            window.location.href = `/guild/{{ guild_id }}?success=true&tab=tickets`;
+        }
+    }
+</script>
+{% endblock %}

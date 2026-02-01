@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="py-20 text-center">
+    <h1
+        class="text-6xl font-extrabold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+        Manage Your Server like a Pro
+    </h1>
+    <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        The most powerful Discord bot management interface. Real-time logging, ticket management, and advanced
+        moderation at your fingertips.
+    </p>
+    {% if not user %}
+    <a href="/login"
+        class="btn-primary px-10 py-4 rounded-2xl font-bold text-lg shadow-2xl inline-block hover:scale-105 transition-transform">
+        Get Started with Discord
+    </a>
+    {% else %}
+    <a href="/dashboard"
+        class="btn-primary px-10 py-4 rounded-2xl font-bold text-lg shadow-2xl inline-block hover:scale-105 transition-transform">
+        Open Dashboard
+    </a>
+    {% endif %}
+</div>
+
+<div class="grid md:grid-cols-3 gap-8 mt-20">
+    <div class="glass p-8 rounded-3xl">
+        <div class="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M12 15l-3-3m0 0l3-3m-3 3h8M3 3h18v18H3V3z" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Live Logging</h3>
+        <p class="text-slate-400">Monitor every action in your server with specialized channels for messages,
+            moderation, and voice.</p>
+    </div>
+    <div class="glass p-8 rounded-3xl">
+        <div class="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Ticket Support</h3>
+        <p class="text-slate-400">Handle support requests efficiently with a dedicated panel and customizable
+            categories.</p>
+    </div>
+    <div class="glass p-8 rounded-3xl">
+        <div class="w-12 h-12 bg-indigo-500/20 rounded-2xl flex items-center justify-center mb-6">
+            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-3">Advanced Automod</h3>
+        <p class="text-slate-400">Keep your community safe with AI-powered word filters and anti-spam protocols.</p>
+    </div>
+</div>
+{% endblock %}

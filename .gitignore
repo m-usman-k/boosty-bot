@@ -1,0 +1,8 @@
+# Files
+.env
+
+
+# Folders
+__pycache__
+discord-bot/__pycache__
+web-panel/__pycache__

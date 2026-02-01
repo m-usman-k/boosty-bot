@@ -308,9 +308,35 @@ class Tickets(commands.Cog):
 
     @app_commands.command(name="status_panel", description="Create a live status panel")
     async def status_panel(self, interaction: discord.Interaction):
-        embed = discord.Embed(title="Ticket Status", description="Loading...", color=Config.COLOR_NEUTRAL)
+        guild_id = interaction.guild.id
+        
+        # Fetch ticket statistics
+        total_tickets = await db.fetchval("SELECT COUNT(*) FROM tickets WHERE guild_id = $1", guild_id) or 0
+        open_tickets = await db.fetchval("SELECT COUNT(*) FROM tickets WHERE guild_id = $1 AND status = 'open'", guild_id) or 0
+        closed_tickets = await db.fetchval("SELECT COUNT(*) FROM tickets WHERE guild_id = $1 AND status = 'closed'", guild_id) or 0
+        claimed_tickets = await db.fetchval("SELECT COUNT(*) FROM tickets WHERE guild_id = $1 AND claimed_by IS NOT NULL AND status = 'open'", guild_id) or 0
+        unclaimed_tickets = open_tickets - claimed_tickets
+        
+        # Create the status embed
+        embed = discord.Embed(
+            title="📊 Ticket Status",
+            description="Current ticket statistics for this server",
+            color=Config.COLOR_NEUTRAL,
+            timestamp=discord.utils.utcnow()
+        )
+        
+        embed.add_field(name="Total Tickets", value=f"```{total_tickets}```", inline=True)
+        embed.add_field(name="Open Tickets", value=f"```{open_tickets}```", inline=True)
+        embed.add_field(name="Closed Tickets", value=f"```{closed_tickets}```", inline=True)
+        embed.add_field(name="Claimed", value=f"```{claimed_tickets}```", inline=True)
+        embed.add_field(name="Unclaimed", value=f"```{unclaimed_tickets}```", inline=True)
+        embed.add_field(name="Status", value="```✅ Active```", inline=True)
+        
+        embed.set_footer(text=f"Last updated")
+        
         await interaction.channel.send(embed=embed)
         await interaction.response.send_message(embed=discord.Embed(description="Status panel created.", color=Config.COLOR_SUCCESS), ephemeral=True)
+
 
     @app_commands.command(name="add", description="Add a user to the current ticket")
     async def add_user(self, interaction: discord.Interaction, user: discord.Member):

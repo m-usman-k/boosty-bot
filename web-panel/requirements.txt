@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+jinja2
+python-multipart
+httpx
+python-dotenv
+starlette

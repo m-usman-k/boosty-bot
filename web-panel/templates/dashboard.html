@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-10 flex items-center justify-between">
+    <div>
+        <h2 class="text-3xl font-bold mb-2 tracking-tight">Select a Server</h2>
+        <p class="text-slate-400">Choose a server you manage to configure DBD Bot settings.</p>
+    </div>
+</div>
+
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for guild in guilds %}
+    <a href="/guild/{{ guild.id }}"
+        class="glass p-6 rounded-3xl group flex flex-col items-center text-center transition-all hover:border-indigo-500/50 hover:bg-slate-800/40">
+        <div class="relative mb-4">
+            {% if guild.icon %}
+            <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.png"
+                class="w-24 h-24 rounded-3xl shadow-xl transition-transform group-hover:scale-110" alt="">
+            {% else %}
+            <div
+                class="w-24 h-24 rounded-3xl bg-slate-700 flex items-center justify-center text-3xl font-bold text-slate-400 group-hover:scale-110 transition-transform">
+                {{ guild.name[0] }}
+            </div>
+            {% endif %}
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-[#0f111a]"></div>
+        </div>
+        <h3 class="text-xl font-bold mb-1 truncate w-full">{{ guild.name }}</h3>
+        <span class="text-sm text-slate-500 font-medium">Administrator</span>
+
+        <div
+            class="mt-6 w-full py-3 rounded-xl border border-white/5 text-sm font-semibold text-slate-300 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
+            Configure Server
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}
