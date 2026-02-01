@@ -4,5 +4,6 @@
 
 # Folders
 __pycache__
+*/__pycache__
 discord-bot/__pycache__
 web-panel/__pycache__
